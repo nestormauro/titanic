@@ -1,3 +1,4 @@
+from typing import Any
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -137,6 +138,12 @@ class TitanicFeatureEngineer:
         # Select features based on correlation with the target variable (Survived) if the correlation is higher than corr_threshold
         selected_features = corr_matrix['Survived'][abs(corr_matrix['Survived']) > corr_threshold].index
         return list(selected_features)
+    
+    def get_train_df(self):
+        return self.get_train_df
+    
+    def get_test_df(self):
+        return self.get_train_df
     
     def feature_engineering(self):
         # Perform the feature engineering steps
