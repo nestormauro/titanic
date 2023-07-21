@@ -1,5 +1,4 @@
-from typing import Any
-
+from config.settings import settings
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -7,32 +6,10 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import RFE
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
-TARGET = "Survived"
-UNNECESSARY_FEATURES = ["SibSp", "Parch", "Name", "Title", "title", "Ticket", "Cabin"]
-NON_NUMERIC_FEATURES = [
-    "Embarked",
-    "Sex",
-    "CabinLetter",
-    "SocialStatus",
-    "FamilySize",
-    "Age",
-    "Fare",
-]
-CATEGORICAL_FEATURES = ["Pclass", "Sex", "Embarked", "CabinLetter"]
-CONTINUOUS_FEATURES = ["FamilySize", "Age", "Fare"]
-
-
 class TitanicFeatureEngineer:
-    def __init__(self, train_file_path, test_file_path):
-        self.train_file_path = train_file_path
-        self.test_file_path = test_file_path
-        self.train_df = None
-        self.test_df = None
-
-    def load_data(self):
-        # Load the Titanic dataset
-        self.train_df = pd.read_csv(self.train_file_path, index_col="PassengerId")
-        self.test_df = pd.read_csv(self.test_file_path, index_col="PassengerId")
+    def __init__(self, train_df, test_df):
+        self.train_df = train_df
+        self.test_df = test_df
 
     def _create_social_status(self):
         for df in [self.train_df, self.test_df]:
@@ -131,11 +108,11 @@ class TitanicFeatureEngineer:
 
     def _set_label_encoding(self):
         for df in [self.train_df, self.test_df]:
-            for feature in NON_NUMERIC_FEATURES:
+            for feature in settings.NON_NUMERIC_FEATURES:
                 df[feature] = LabelEncoder().fit_transform(df[feature])
 
     def _set_onehot_encoding(self):
-        for feature in CATEGORICAL_FEATURES:
+        for feature in settings.CATEGORICAL_FEATURES:
             one_hot = pd.get_dummies(self.train_df[feature], prefix=feature)
             self.train_df = pd.concat([self.train_df, one_hot], axis=1)
             self.train_df.drop(feature, axis=1, inplace=True)
@@ -145,7 +122,7 @@ class TitanicFeatureEngineer:
             self.test_df.drop(feature, axis=1, inplace=True)
 
     def _set_standardization(self):
-        for feature in CONTINUOUS_FEATURES:
+        for feature in settings.CONTINUOUS_FEATURES:
             self.train_df[[feature]] = StandardScaler().fit_transform(
                 self.train_df[[feature]].to_numpy()
             )
@@ -165,8 +142,8 @@ class TitanicFeatureEngineer:
 
     def _feature_selection_rfe(self):
         # Feature selection using Recursive Feature Elimination (RFE)
-        X = self.train_df.drop([TARGET], axis=1)
-        y = self.train_df[TARGET]
+        X = self.train_df.drop([settings.TARGET], axis=1)
+        y = self.train_df[settings.TARGET]
 
         rf_classifier = RandomForestClassifier()
 
@@ -191,8 +168,8 @@ class TitanicFeatureEngineer:
         corr_matrix = df.corr()
 
         # Select features based on correlation with the target variable (Survived) if the correlation is higher than corr_threshold
-        selected_features = corr_matrix[TARGET][
-            abs(corr_matrix[TARGET]) > corr_threshold
+        selected_features = corr_matrix[settings.TARGET][
+            abs(corr_matrix[settings.TARGET]) > corr_threshold
         ].index
         return list(selected_features)
 
@@ -209,7 +186,7 @@ class TitanicFeatureEngineer:
         self._create_new_features()
 
         for df in [self.train_df, self.test_df]:
-            df.drop(UNNECESSARY_FEATURES, axis=1, inplace=True)
+            df.drop(settings.UNNECESSARY_FEATURES, axis=1, inplace=True)
             df.reset_index(drop=True, inplace=True)
 
         self._set_label_encoding()
@@ -220,9 +197,9 @@ class TitanicFeatureEngineer:
         else:
             feature_list = self._feature_selection_correlation(self.train_df)
         self.test_df = self.test_df[feature_list].reset_index(drop=True)
-        feature_list.append(TARGET)
+        feature_list.append(settings.TARGET)
         self.train_df = self.train_df[feature_list].reset_index(drop=True)
-            
+
         self._set_standardization()
         self._set_onehot_encoding()
         return feature_list

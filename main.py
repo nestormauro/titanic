@@ -1,5 +1,6 @@
-from train.trainer import Train
 import argparse
+import os
+from train.trainer import Train
 
 if __name__ == "__main__":
     """
@@ -12,4 +13,7 @@ if __name__ == "__main__":
     train_obj = Train(args.algorithm)
     train_obj.train_model(args.train_file_path, args.test_file_path)"""
     train_obj = Train("Dummy")
-    train_obj.train_model("/home/nestor/workspace/python/ML/technical_assessments/titanic/data/train.csv", "/home/nestor/workspace/python/ML/technical_assessments/titanic/data/test.csv")
+    train_obj.train_model(
+        f"{os.getcwd()}/data/train.csv",
+        f"{os.getcwd()}/data/test.csv",
+    )
