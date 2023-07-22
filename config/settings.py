@@ -23,4 +23,5 @@ class Config:
     AVAILABLE_ALGORITHMS = ["Dummy", "RandomForest", "GradientBoosting"]
     PACKAGE_RUN_OPTIONS = ["Train", "Predict", "Test"]
 
+
 settings = Config()

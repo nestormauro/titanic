@@ -13,7 +13,6 @@ class KFoldValidator:
         self.kfold = KFold(n_splits=num_folds, shuffle=True, random_state=42)
 
     def calculate_metrics(self, X, y):
-
         roc_auc_scores = cross_val_score(
             self.algorithm, X, y, scoring="roc_auc", cv=self.kfold
         )
