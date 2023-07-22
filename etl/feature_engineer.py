@@ -122,6 +122,8 @@ class TitanicFeatureEngineer:
             one_hot = pd.get_dummies(self.test_df[feature], prefix=feature)
             self.test_df = pd.concat([self.test_df, one_hot], axis=1)
             self.test_df.drop(feature, axis=1, inplace=True)
+        # Add this column for cabinet letter T
+        self.test_df['CabinLetter_8'] = 0
 
     def _set_standardization(self):
         for feature in settings.CONTINUOUS_FEATURES:
@@ -174,6 +176,11 @@ class TitanicFeatureEngineer:
             abs(corr_matrix[settings.TARGET]) > corr_threshold
         ].index
         return list(selected_features)
+    
+    def get_features_and_target(self):
+        X = self.train_df.drop(settings.TARGET, axis=1)
+        y = self.train_df[settings.TARGET]
+        return X, y
 
     def get_train_df(self):
         return self.train_df

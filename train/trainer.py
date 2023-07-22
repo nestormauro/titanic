@@ -1,11 +1,13 @@
-import joblib
 import os
+
+import joblib
+
 from etl.data_loader import DataLoader
 from etl.feature_engineer import TitanicFeatureEngineer
 from model.dummy_classifier import DummyModel
-from model.random_forest import RandomForestModel
 from model.gradient_boosting import GradientBoostingModel
 from model.kfold_cross_validator import KFoldValidator
+from model.random_forest import RandomForestModel
 
 
 class Train:
@@ -29,8 +31,7 @@ class Train:
         )
         titanic_fe.feature_engineering()
         titanic_fe.feature_selection("RFE")
-        train_df = titanic_fe.get_train_df()
-        test_df = titanic_fe.get_test_df()
+        X, y = titanic_fe.get_features_and_target()
 
         validator = KFoldValidator(model)
         (
@@ -38,9 +39,18 @@ class Train:
             std_roc_auc,
             mean_accuracy,
             std_accuracy,
-        ) = validator.calculate_metrics(train_df)
+        ) = validator.calculate_metrics(X, y)
 
-        joblib.dump(model, f"{os.getcwd()}/model/models/{str(type(model).__name__).lower()}.joblib")
+        model.fit(X, y)
+
+        joblib.dump(
+            model,
+            f"{os.getcwd()}/model/models/{str(type(model).__name__).lower()}.joblib",
+        )
+
+        print("------------------------")
+        print("Training stage completed")
+        print("------------------------")
         print("Mean ROC-AUC:", mean_roc_auc)
         print("Standard Deviation of ROC-AUC:", std_roc_auc)
         print("Mean Accuracy:", mean_accuracy)

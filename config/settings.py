@@ -20,6 +20,7 @@ class Config:
     ]
     CATEGORICAL_FEATURES = ["Pclass", "Sex", "Embarked", "CabinLetter"]
     CONTINUOUS_FEATURES = ["FamilySize", "Age", "Fare"]
-
+    AVAILABLE_ALGORITHMS = ["Dummy", "RandomForest", "GradientBoosting"]
+    PACKAGE_RUN_OPTIONS = ["Train", "Predict", "Test"]
 
 settings = Config()
