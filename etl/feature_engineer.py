@@ -1,10 +1,12 @@
-from config.settings import settings
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import RFE
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+
+from config.settings import settings
+
 
 class TitanicFeatureEngineer:
     def __init__(self, train_df, test_df):

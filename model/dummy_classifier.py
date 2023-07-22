@@ -1,6 +1,4 @@
 from sklearn.dummy import DummyClassifier
-from sklearn.metrics import accuracy_score, roc_auc_score
-from sklearn.model_selection import KFold, cross_val_score
 
 
 class DummyModel:

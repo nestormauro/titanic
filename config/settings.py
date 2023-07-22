@@ -1,6 +1,14 @@
 class Config:
     TARGET = "Survived"
-    UNNECESSARY_FEATURES = ["SibSp", "Parch", "Name", "Title", "title", "Ticket", "Cabin"]
+    UNNECESSARY_FEATURES = [
+        "SibSp",
+        "Parch",
+        "Name",
+        "Title",
+        "title",
+        "Ticket",
+        "Cabin",
+    ]
     NON_NUMERIC_FEATURES = [
         "Embarked",
         "Sex",
@@ -12,7 +20,6 @@ class Config:
     ]
     CATEGORICAL_FEATURES = ["Pclass", "Sex", "Embarked", "CabinLetter"]
     CONTINUOUS_FEATURES = ["FamilySize", "Age", "Fare"]
-
 
 
 settings = Config()

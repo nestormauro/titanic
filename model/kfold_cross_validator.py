@@ -1,8 +1,9 @@
-from config.settings import settings
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score
+from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import KFold, cross_val_predict, cross_val_score
+import mlflow
+from config.settings import settings
 
 
 class KFoldValidator:
@@ -26,7 +27,12 @@ class KFoldValidator:
         std_roc_auc = roc_auc_scores.std()
         mean_accuracy = accuracy_scores.mean()
         std_accuracy = accuracy_scores.std()
-
+        
+        mlflow.set_tracking_uri("http://127.0.0.1:5000")
+        mlflow.set_experiment("Titanic")
+        mlflow.sklearn.log_model(self.algorithm, "gradient-boosting-model")
+        mlflow.log_metric("mean_accuracy", mean_accuracy)
+        mlflow.log_metric("mean_roc_auc", mean_roc_auc)
         self._plot_confusion_matrix(train_df)
 
         return mean_roc_auc, std_roc_auc, mean_accuracy, std_accuracy
@@ -36,7 +42,7 @@ class KFoldValidator:
         y = train_df[settings.TARGET]
         y_pred = cross_val_predict(self.algorithm, X, y, cv=self.kfold)
         cm = confusion_matrix(y, y_pred)
-        algorithm_name = type(self.algorithm).__name__
+        algorithm_name = str(type(self.algorithm).__name__).lower()
 
         plt.figure(figsize=(8, 6))
         sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False)
@@ -44,3 +50,4 @@ class KFoldValidator:
         plt.ylabel("True Labels")
         plt.title("Confusion Matrix")
         plt.savefig(f"confusion_matrix_{algorithm_name}.png")
+        mlflow.log_figure(plt.figure(), "conf_matrix.png")
