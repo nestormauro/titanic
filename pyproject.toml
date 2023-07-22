@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "titanic"
 version = "0.1.0"
-description = "This package solve the Titanic dataset using ML algorithms as part of a technical assessment"
+description = "This package solves the Titanic dataset using ML algorithms as part of a technical assessment"
 authors = ["Nestor Rueda <nestormauro@gmail.com>"]
 license = "Mit"
 readme = "README.md"

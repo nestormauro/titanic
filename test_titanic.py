@@ -1,11 +1,13 @@
 import os
+
 import pytest
+
 from etl.data_loader import DataLoader
 from etl.feature_engineer import TitanicFeatureEngineer
 from model.dummy_classifier import DummyModel
 from model.gradient_boosting import GradientBoostingModel
-from model.random_forest import RandomForestModel
 from model.kfold_cross_validator import KFoldValidator
+from model.random_forest import RandomForestModel
 
 
 class TestTitanic:
@@ -37,21 +39,20 @@ class TestTitanic:
         feature_engineer.feature_selection("RFE")
         X, y = feature_engineer.get_features_and_target()
 
-
         assert len(list(feature_engineer.get_train_df().columns)) == 21
         assert len(list(feature_engineer.get_test_df().columns)) == 20
 
     def test_dummy_model(self):
         model = DummyModel().get_model()
-        assert str(type(model).__name__).lower() == 'dummyclassifier'
+        assert str(type(model).__name__).lower() == "dummyclassifier"
 
     def test_random_forest_model(self):
         model = RandomForestModel().get_model()
-        assert str(type(model).__name__).lower() == 'randomforestclassifier'
+        assert str(type(model).__name__).lower() == "randomforestclassifier"
 
     def test_gradient_boosting_model(self):
         model = GradientBoostingModel().get_model()
-        assert str(type(model).__name__).lower() == 'gradientboostingclassifier'
+        assert str(type(model).__name__).lower() == "gradientboostingclassifier"
 
     def test_kfold_validator(self):
         dataloader = DataLoader()
@@ -67,7 +68,12 @@ class TestTitanic:
 
         model = DummyModel().get_model()
         validator = KFoldValidator(model)
-        mean_roc_auc, std_roc_auc, mean_accuracy, std_accuracy = validator.calculate_metrics(X, y)
+        (
+            mean_roc_auc,
+            std_roc_auc,
+            mean_accuracy,
+            std_accuracy,
+        ) = validator.calculate_metrics(X, y)
 
         assert mean_roc_auc >= 0.0
         assert std_roc_auc >= 0.0

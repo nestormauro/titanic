@@ -8,7 +8,7 @@ from train.trainer import Train
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="ML model for the Titanic dataset.")
-    
+
     parser.add_argument(
         "option", choices=settings.PACKAGE_RUN_OPTIONS, help="Run options available"
     )
@@ -36,4 +36,4 @@ if __name__ == "__main__":
         predict_obj = Predict(args.algorithm)
         predict_obj.set_predictions(args.train_file_path, args.test_file_path)
     elif args.option == "Test":
-        subprocess.run(["python","-m","pytest"])
+        subprocess.run(["python", "-m", "pytest"])
