@@ -206,6 +206,7 @@ class TitanicFeatureEngineer:
         else:
             feature_list = self._feature_selection_correlation(self.train_df)
         self.test_df = self.test_df[feature_list].reset_index(drop=True)
+        print(feature_list)
         feature_list.append(settings.TARGET)
         self.train_df = self.train_df[feature_list].reset_index(drop=True)
 
